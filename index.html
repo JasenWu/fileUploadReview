@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>上传文件预览</title>
+
+  <script type="text/javascript">
+    /*
+                                                         方法名称：uploadIcon
+                                                         功能描述：上传文件时候判断是否是图片格式
+                                                         */
+    function uploadIcon(targetId, sourceId) {
+      function getFileUrl(sourceId) {
+        let url;
+        if (navigator.userAgent.indexOf("MSIE") >= 1) { // IE
+          if (!!document.getElementById(sourceId).value) {
+            url = document.getElementById(sourceId).value;
+          } else {
+            url = this.defaultImgSrc;
+          }
+        } else { // Firefox
+          if (!!document.getElementById(sourceId).files.item(0)) {
+            url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+          } else {
+            url = this.defaultImgSrc;
+          }
+        }
+        return url;
+      }
+      //判断大小和格式
+      let file = document.getElementById(sourceId).files.item(0);
+      if (!!file) {
+        if (file.type != 'image/jpeg' && file.type != 'image/gif' && file.type != 'image/png') { //300Kb是上限
+          alert("只支持jpg、jpeg、png、gif、bmp格式的文件");
+          document.getElementById(sourceId).value  =  ""; 
+          return;
+        }
+        console.log("filesize", file.size);
+        if (file.size > 1000 * 1000) { //300Kb是上限
+          alert("图片必须小于300KB");
+          document.getElementById(sourceId).value  =  ""; 
+          return;
+        }
+      }
+      let url = getFileUrl(sourceId);
+      let imgPre = document.getElementById(targetId);
+      imgPre.src = url;
+    }
+  </script>
+
+  <style type="text/css">
+    .icon_File {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    #imgPre {
+      width: 100%;
+      height: 100%;
+      display: block;
+
+    }
+
+    #imageFileUpload {
+
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="div_wrapper">
+    <div class="icon_File">
+      <img id="imgPre" src="./img/upload.png" />
+      <input id="imageFileUpload" class="fileInput" type="file" onChange="uploadIcon('imgPre','imageFileUpload')" />
+    </div>
+
+  </div>
+</body>
+
+</html>
